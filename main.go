@@ -500,36 +500,36 @@ func mlProcessPwd(list_ []string, mlModel string, numberNeighbours int) []string
 		// We'll try to run a small python helper that loads fasttext and prints neighbours as JSON.
 		// This requires python and fasttext installed (same requirement as original).
 		py := `
-import sys, json
-try:
-    import fasttext
-except Exception as e:
-    print("ERROR:fasttext_not_loaded", file=sys.stderr)
-    sys.exit(1)
-model = fasttext.load_model(sys.argv[1])
-k = int(sys.argv[2])
-words = []
-for line in sys.stdin:
-    w = line.strip()
-    if not w: continue
-    words.append(w)
-res = {}
-for w in words:
-    n = model.get_nearest_neighbors(w, k)
-    neighs = [t for _, t in n if '.' not in t]
-    # filter uppercase in position >0
-    def_valid = []
-    for t in neighs:
-        ok = True
-        for ch in t[1:]:
-            if ch.isupper():
-                ok = False
-                break
-        if ok:
-            def_valid.append(t)
-    res[w] = def_valid
-print(json.dumps(res))
-`
+		import sys, json
+		try:
+			import fasttext
+		except Exception as e:
+			print("ERROR:fasttext_not_loaded", file=sys.stderr)
+			sys.exit(1)
+		model = fasttext.load_model(sys.argv[1])
+		k = int(sys.argv[2])
+		words = []
+		for line in sys.stdin:
+			w = line.strip()
+			if not w: continue
+			words.append(w)
+		res = {}
+		for w in words:
+			n = model.get_nearest_neighbors(w, k)
+			neighs = [t for _, t in n if '.' not in t]
+			# filter uppercase in position >0
+			def_valid = []
+			for t in neighs:
+				ok = True
+				for ch in t[1:]:
+					if ch.isupper():
+						ok = False
+						break
+				if ok:
+					def_valid.append(t)
+			res[w] = def_valid
+		print(json.dumps(res))
+		`
 		cmd := exec.Command("python3", "-c", py, mlModel, fmt.Sprintf("%d", numberNeighbours))
 		in := bytes.Buffer{}
 		for _, w := range list_ {
@@ -735,20 +735,23 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		localAmountSuf = amount_of_sufixs_used_light_mode
 		localAmountPref = amount_of_prefixs_used_light_mode
 	}
+
 	basicPattern := []string{}
 	w := strings.ToLower(strings.TrimSpace(word))
 	wNoPunct := removeAccents(w)
 
-	basicPattern = append(basicPattern, w)
-	basicPattern = append(basicPattern, strings.ToUpper(w))
-	basicPattern = append(basicPattern, strings.Title(w))
-	basicPattern = append(basicPattern, wNoPunct)
-	basicPattern = append(basicPattern, strings.ToUpper(wNoPunct))
-	basicPattern = append(basicPattern, strings.Title(wNoPunct))
+	basicPattern = append(basicPattern,
+		w,
+		strings.ToUpper(w),
+		strings.Title(w),
+		wNoPunct,
+		strings.ToUpper(wNoPunct),
+		strings.Title(wNoPunct),
+	)
 
-	// dedupe preserving order
-	basicPattern = uniquePreserve(basicPattern)
+	// 🚫 Aquí ya no se hace uniquePreserve
 
+	// Transformación a → @
 	transform1 := []string{}
 	for _, item := range basicPattern {
 		item2 := strings.ReplaceAll(item, "a", "@")
@@ -757,6 +760,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 	}
 	basicPattern = append(basicPattern, transform1...)
 
+	// Transformación o → 0
 	transform2 := []string{}
 	for _, item := range basicPattern {
 		item2 := strings.ReplaceAll(item, "o", "0")
@@ -766,6 +770,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 	basicPattern = append(basicPattern, transform2...)
 
 	if !LIGHT_MODE {
+		// Transformación e → €
 		transform3 := []string{}
 		for _, item := range basicPattern {
 			item2 := strings.ReplaceAll(item, "e", "€")
@@ -774,6 +779,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		}
 		basicPattern = append(basicPattern, transform3...)
 
+		// Transformación e → 3
 		transform4 := []string{}
 		for _, item := range basicPattern {
 			item2 := strings.ReplaceAll(item, "e", "3")
@@ -782,6 +788,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		}
 		basicPattern = append(basicPattern, transform4...)
 
+		// Transformación s → $
 		transform5 := []string{}
 		for _, item := range basicPattern {
 			item2 := strings.ReplaceAll(item, "s", "$")
@@ -790,6 +797,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		}
 		basicPattern = append(basicPattern, transform5...)
 
+		// Transformación l → 1
 		transform6 := []string{}
 		for _, item := range basicPattern {
 			item2 := strings.ReplaceAll(item, "l", "1")
@@ -799,36 +807,31 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		basicPattern = append(basicPattern, transform6...)
 	}
 
-	nonRepeatedList := uniquePreserve(basicPattern)
+	nonRepeatedList := append([]string{}, basicPattern...)
 
 	// word + suffixs
-	wordSuf := []string{}
 	limitSuf := localAmountSuf
 	if limitSuf > len(BASIC_SUFIXS) {
 		limitSuf = len(BASIC_SUFIXS)
 	}
 	for _, a := range basicPattern {
 		for _, b := range BASIC_SUFIXS[:limitSuf] {
-			wordSuf = append(wordSuf, a+b)
+			nonRepeatedList = append(nonRepeatedList, a+b)
 		}
 	}
-	nonRepeatedList = append(nonRepeatedList, wordSuf...)
 
 	// prefix + word
 	limitPref := localAmountPref
 	if limitPref > len(BASIC_PREFIXS) {
 		limitPref = len(BASIC_PREFIXS)
 	}
-	prefixWord := []string{}
 	for _, a := range BASIC_PREFIXS[:limitPref] {
 		for _, b := range basicPattern {
-			prefixWord = append(prefixWord, a+b)
+			nonRepeatedList = append(nonRepeatedList, a+b)
 		}
 	}
-	nonRepeatedList = append(nonRepeatedList, prefixWord...)
 
-	// prefix + word + suffix (with //3 sizes)
-	prefixWordSuf := []string{}
+	// prefix + word + suffix
 	prefLimit := limitPref / 3
 	sufLimit := limitSuf / 3
 	if prefLimit < 0 {
@@ -840,11 +843,10 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 	for _, a := range BASIC_PREFIXS[:prefLimit] {
 		for _, b := range basicPattern {
 			for _, c := range BASIC_SUFIXS[:sufLimit] {
-				prefixWordSuf = append(prefixWordSuf, a+b+c)
+				nonRepeatedList = append(nonRepeatedList, a+b+c)
 			}
 		}
 	}
-	nonRepeatedList = append(nonRepeatedList, prefixWordSuf...)
 
 	// EXTENDED MODE
 	if FULL_MODE {
@@ -856,19 +858,20 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		if symLimit > len(SYMBOLIC_PATTERNS) {
 			symLimit = len(SYMBOLIC_PATTERNS)
 		}
+
 		// word + number
 		for _, a := range basicPattern {
 			for _, b := range NUMERIC_PATTERNS[:numLimit] {
 				nonRepeatedList = append(nonRepeatedList, a+b)
 			}
 		}
-		// word + simbol
+		// word + symbol
 		for _, a := range basicPattern {
 			for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
 				nonRepeatedList = append(nonRepeatedList, a+b)
 			}
 		}
-		// word + number + simbol
+		// word + number + symbol
 		for _, a := range basicPattern {
 			for _, b := range NUMERIC_PATTERNS[:numLimit] {
 				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
@@ -876,7 +879,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 				}
 			}
 		}
-		// word + simbol + number
+		// word + symbol + number
 		for _, a := range basicPattern {
 			for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
 				for _, c := range NUMERIC_PATTERNS[:numLimit] {
@@ -884,7 +887,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 				}
 			}
 		}
-		// simbol + word
+		// symbol + word
 		for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
 			for _, b := range basicPattern {
 				nonRepeatedList = append(nonRepeatedList, a+b)
@@ -896,7 +899,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 				nonRepeatedList = append(nonRepeatedList, a+b)
 			}
 		}
-		// simbol + word + number
+		// symbol + word + number
 		for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
 			for _, b := range basicPattern {
 				for _, c := range NUMERIC_PATTERNS[:numLimit] {
@@ -904,7 +907,7 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 				}
 			}
 		}
-		// number + word + simbol
+		// number + word + symbol
 		for _, a := range NUMERIC_PATTERNS[:numLimit] {
 			for _, b := range basicPattern {
 				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
@@ -914,8 +917,8 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
 		}
 	}
 
-	nonRepeatedList = uniquePreserve(nonRepeatedList)
-	return nonRepeatedList
+	// ✅ Dedupe solo aquí, al final
+	return uniquePreserve(nonRepeatedList)
 }
 
 func uniquePreserve(items []string) []string {
