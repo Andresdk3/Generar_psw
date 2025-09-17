@@ -57,7 +57,7 @@ var (
 	}
 
 	SYMBOLIC_PATTERNS = []string{
-		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", ">", "++", "??", "!@", "\\", ":)", "ื", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "´", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
+		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", "///", ">", "++", "??", "!@", "\\", ":)", "ื", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "´", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
 	}
 )
 
@@ -729,196 +729,209 @@ func containsRuneUpperAfterFirst(s string) bool {
 }
 
 func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
-	localAmountSuf := amount_of_sufixs_used
-	localAmountPref := amount_of_prefixs_used
-	if LIGHT_MODE {
-		localAmountSuf = amount_of_sufixs_used_light_mode
-		localAmountPref = amount_of_prefixs_used_light_mode
-	}
+    localAmountSuf := amount_of_sufixs_used
+    localAmountPref := amount_of_prefixs_used
+    if LIGHT_MODE {
+        localAmountSuf = amount_of_sufixs_used_light_mode
+        localAmountPref = amount_of_prefixs_used_light_mode
+    }
 
-	basicPattern := []string{}
-	w := strings.ToLower(strings.TrimSpace(word))
-	wNoPunct := removeAccents(w)
+    // Pre-calcular tamaño estimado para optimizar memoria
+    estimatedSize := 1000
+    if FULL_MODE {
+        estimatedSize = 50000
+    } else if LIGHT_MODE {
+        estimatedSize = 200
+    }
+    
+    nonRepeatedList := make([]string, 0, estimatedSize)
+    basicPattern := make([]string, 0, 20)
+    
+    w := strings.ToLower(strings.TrimSpace(word))
+    wNoPunct := removeAccents(w)
+    
+    // Patrones básicos (EXACTAMENTE como en la versión original)
+    basicPattern = append(basicPattern,
+        w,
+        strings.ToUpper(w),
+        strings.Title(w),
+        wNoPunct,
+        strings.ToUpper(wNoPunct),
+        strings.Title(wNoPunct),
+    )
+    
+    // 🚫 RESTAURAR LA LÓGICA ORIGINAL COMPLETA sin cambios
+    
+    // Transformación a → @ (ORIGINAL)
+    transform1 := []string{}
+    for _, item := range basicPattern {
+        item2 := strings.ReplaceAll(item, "a", "@")
+        item2 = strings.ReplaceAll(item2, "A", "@")
+        transform1 = append(transform1, item2)
+    }
+    basicPattern = append(basicPattern, transform1...)
 
-	basicPattern = append(basicPattern,
-		w,
-		strings.ToUpper(w),
-		strings.Title(w),
-		wNoPunct,
-		strings.ToUpper(wNoPunct),
-		strings.Title(wNoPunct),
-	)
+    // Transformación o → 0 (ORIGINAL)
+    transform2 := []string{}
+    for _, item := range basicPattern {
+        item2 := strings.ReplaceAll(item, "o", "0")
+        item2 = strings.ReplaceAll(item2, "O", "0")
+        transform2 = append(transform2, item2)
+    }
+    basicPattern = append(basicPattern, transform2...)
 
-	// 🚫 Aquí ya no se hace uniquePreserve
+    if !LIGHT_MODE {
+        // Transformación e → € (ORIGINAL)
+        transform3 := []string{}
+        for _, item := range basicPattern {
+            item2 := strings.ReplaceAll(item, "e", "€")
+            item2 = strings.ReplaceAll(item2, "E", "€")
+            transform3 = append(transform3, item2)
+        }
+        basicPattern = append(basicPattern, transform3...)
 
-	// Transformación a → @
-	transform1 := []string{}
-	for _, item := range basicPattern {
-		item2 := strings.ReplaceAll(item, "a", "@")
-		item2 = strings.ReplaceAll(item2, "A", "@")
-		transform1 = append(transform1, item2)
-	}
-	basicPattern = append(basicPattern, transform1...)
+        // Transformación e → 3 (ORIGINAL)
+        transform4 := []string{}
+        for _, item := range basicPattern {
+            item2 := strings.ReplaceAll(item, "e", "3")
+            item2 = strings.ReplaceAll(item2, "E", "3")
+            transform4 = append(transform4, item2)
+        }
+        basicPattern = append(basicPattern, transform4...)
 
-	// Transformación o → 0
-	transform2 := []string{}
-	for _, item := range basicPattern {
-		item2 := strings.ReplaceAll(item, "o", "0")
-		item2 = strings.ReplaceAll(item2, "O", "0")
-		transform2 = append(transform2, item2)
-	}
-	basicPattern = append(basicPattern, transform2...)
+        // Transformación s → $ (ORIGINAL)
+        transform5 := []string{}
+        for _, item := range basicPattern {
+            item2 := strings.ReplaceAll(item, "s", "$")
+            item2 = strings.ReplaceAll(item2, "S", "$")
+            transform5 = append(transform5, item2)
+        }
+        basicPattern = append(basicPattern, transform5...)
 
-	if !LIGHT_MODE {
-		// Transformación e → €
-		transform3 := []string{}
-		for _, item := range basicPattern {
-			item2 := strings.ReplaceAll(item, "e", "€")
-			item2 = strings.ReplaceAll(item2, "E", "€")
-			transform3 = append(transform3, item2)
-		}
-		basicPattern = append(basicPattern, transform3...)
+        // Transformación l → 1 (ORIGINAL)
+        transform6 := []string{}
+        for _, item := range basicPattern {
+            item2 := strings.ReplaceAll(item, "l", "1")
+            item2 = strings.ReplaceAll(item2, "L", "1")
+            transform6 = append(transform6, item2)
+        }
+        basicPattern = append(basicPattern, transform6...)
+    }
 
-		// Transformación e → 3
-		transform4 := []string{}
-		for _, item := range basicPattern {
-			item2 := strings.ReplaceAll(item, "e", "3")
-			item2 = strings.ReplaceAll(item2, "E", "3")
-			transform4 = append(transform4, item2)
-		}
-		basicPattern = append(basicPattern, transform4...)
+    // Hacer unique de basicPattern aquí (como en el original)
+    basicPattern = uniquePreserve(basicPattern)
+    nonRepeatedList = append(nonRepeatedList, basicPattern...)
 
-		// Transformación s → $
-		transform5 := []string{}
-		for _, item := range basicPattern {
-			item2 := strings.ReplaceAll(item, "s", "$")
-			item2 = strings.ReplaceAll(item2, "S", "$")
-			transform5 = append(transform5, item2)
-		}
-		basicPattern = append(basicPattern, transform5...)
+    // word + suffixs (ORIGINAL)
+    limitSuf := localAmountSuf
+    if limitSuf > len(BASIC_SUFIXS) {
+        limitSuf = len(BASIC_SUFIXS)
+    }
+    for _, a := range basicPattern {
+        for _, b := range BASIC_SUFIXS[:limitSuf] {
+            nonRepeatedList = append(nonRepeatedList, a+b)
+        }
+    }
 
-		// Transformación l → 1
-		transform6 := []string{}
-		for _, item := range basicPattern {
-			item2 := strings.ReplaceAll(item, "l", "1")
-			item2 = strings.ReplaceAll(item2, "L", "1")
-			transform6 = append(transform6, item2)
-		}
-		basicPattern = append(basicPattern, transform6...)
-	}
+    // prefix + word (ORIGINAL)
+    limitPref := localAmountPref
+    if limitPref > len(BASIC_PREFIXS) {
+        limitPref = len(BASIC_PREFIXS)
+    }
+    for _, a := range BASIC_PREFIXS[:limitPref] {
+        for _, b := range basicPattern {
+            nonRepeatedList = append(nonRepeatedList, a+b)
+        }
+    }
 
-	nonRepeatedList := append([]string{}, basicPattern...)
+    // prefix + word + suffix (ORIGINAL)
+    prefLimit := limitPref / 3
+    sufLimit := limitSuf / 3
+    if prefLimit < 0 {
+        prefLimit = 0
+    }
+    if sufLimit < 0 {
+        sufLimit = 0
+    }
+    for _, a := range BASIC_PREFIXS[:prefLimit] {
+        for _, b := range basicPattern {
+            for _, c := range BASIC_SUFIXS[:sufLimit] {
+                nonRepeatedList = append(nonRepeatedList, a+b+c)
+            }
+        }
+    }
 
-	// word + suffixs
-	limitSuf := localAmountSuf
-	if limitSuf > len(BASIC_SUFIXS) {
-		limitSuf = len(BASIC_SUFIXS)
-	}
-	for _, a := range basicPattern {
-		for _, b := range BASIC_SUFIXS[:limitSuf] {
-			nonRepeatedList = append(nonRepeatedList, a+b)
-		}
-	}
+    // EXTENDED MODE (ORIGINAL)
+    if FULL_MODE {
+        numLimit := amount_of_numericpat_used
+        if numLimit > len(NUMERIC_PATTERNS) {
+            numLimit = len(NUMERIC_PATTERNS)
+        }
+        symLimit := amount_of_symbolpat_used
+        if symLimit > len(SYMBOLIC_PATTERNS) {
+            symLimit = len(SYMBOLIC_PATTERNS)
+        }
 
-	// prefix + word
-	limitPref := localAmountPref
-	if limitPref > len(BASIC_PREFIXS) {
-		limitPref = len(BASIC_PREFIXS)
-	}
-	for _, a := range BASIC_PREFIXS[:limitPref] {
-		for _, b := range basicPattern {
-			nonRepeatedList = append(nonRepeatedList, a+b)
-		}
-	}
+        // word + number
+        for _, a := range basicPattern {
+            for _, b := range NUMERIC_PATTERNS[:numLimit] {
+                nonRepeatedList = append(nonRepeatedList, a+b)
+            }
+        }
+        // word + symbol
+        for _, a := range basicPattern {
+            for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
+                nonRepeatedList = append(nonRepeatedList, a+b)
+            }
+        }
+        // word + number + symbol
+        for _, a := range basicPattern {
+            for _, b := range NUMERIC_PATTERNS[:numLimit] {
+                for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
+                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+                }
+            }
+        }
+        // word + symbol + number
+        for _, a := range basicPattern {
+            for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
+                for _, c := range NUMERIC_PATTERNS[:numLimit] {
+                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+                }
+            }
+        }
+        // symbol + word
+        for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
+            for _, b := range basicPattern {
+                nonRepeatedList = append(nonRepeatedList, a+b)
+            }
+        }
+        // number + word
+        for _, a := range NUMERIC_PATTERNS[:numLimit] {
+            for _, b := range basicPattern {
+                nonRepeatedList = append(nonRepeatedList, a+b)
+            }
+        }
+        // symbol + word + number
+        for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
+            for _, b := range basicPattern {
+                for _, c := range NUMERIC_PATTERNS[:numLimit] {
+                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+                }
+            }
+        }
+        // number + word + symbol
+        for _, a := range NUMERIC_PATTERNS[:numLimit] {
+            for _, b := range basicPattern {
+                for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
+                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+                }
+            }
+        }
+    }
 
-	// prefix + word + suffix
-	prefLimit := limitPref / 3
-	sufLimit := limitSuf / 3
-	if prefLimit < 0 {
-		prefLimit = 0
-	}
-	if sufLimit < 0 {
-		sufLimit = 0
-	}
-	for _, a := range BASIC_PREFIXS[:prefLimit] {
-		for _, b := range basicPattern {
-			for _, c := range BASIC_SUFIXS[:sufLimit] {
-				nonRepeatedList = append(nonRepeatedList, a+b+c)
-			}
-		}
-	}
-
-	// EXTENDED MODE
-	if FULL_MODE {
-		numLimit := amount_of_numericpat_used
-		if numLimit > len(NUMERIC_PATTERNS) {
-			numLimit = len(NUMERIC_PATTERNS)
-		}
-		symLimit := amount_of_symbolpat_used
-		if symLimit > len(SYMBOLIC_PATTERNS) {
-			symLimit = len(SYMBOLIC_PATTERNS)
-		}
-
-		// word + number
-		for _, a := range basicPattern {
-			for _, b := range NUMERIC_PATTERNS[:numLimit] {
-				nonRepeatedList = append(nonRepeatedList, a+b)
-			}
-		}
-		// word + symbol
-		for _, a := range basicPattern {
-			for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
-				nonRepeatedList = append(nonRepeatedList, a+b)
-			}
-		}
-		// word + number + symbol
-		for _, a := range basicPattern {
-			for _, b := range NUMERIC_PATTERNS[:numLimit] {
-				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
-					nonRepeatedList = append(nonRepeatedList, a+b+c)
-				}
-			}
-		}
-		// word + symbol + number
-		for _, a := range basicPattern {
-			for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
-				for _, c := range NUMERIC_PATTERNS[:numLimit] {
-					nonRepeatedList = append(nonRepeatedList, a+b+c)
-				}
-			}
-		}
-		// symbol + word
-		for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
-			for _, b := range basicPattern {
-				nonRepeatedList = append(nonRepeatedList, a+b)
-			}
-		}
-		// number + word
-		for _, a := range NUMERIC_PATTERNS[:numLimit] {
-			for _, b := range basicPattern {
-				nonRepeatedList = append(nonRepeatedList, a+b)
-			}
-		}
-		// symbol + word + number
-		for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
-			for _, b := range basicPattern {
-				for _, c := range NUMERIC_PATTERNS[:numLimit] {
-					nonRepeatedList = append(nonRepeatedList, a+b+c)
-				}
-			}
-		}
-		// number + word + symbol
-		for _, a := range NUMERIC_PATTERNS[:numLimit] {
-			for _, b := range basicPattern {
-				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
-					nonRepeatedList = append(nonRepeatedList, a+b+c)
-				}
-			}
-		}
-	}
-
-	// ✅ Dedupe solo aquí, al final
-	return uniquePreserve(nonRepeatedList)
+    // ✅ Dedupe al final (ORIGINAL)
+    return uniquePreserve(nonRepeatedList)
 }
 
 func uniquePreserve(items []string) []string {
