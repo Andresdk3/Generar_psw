@@ -28,7 +28,7 @@ var (
 	amount_of_sufixs_used_light_mode  = 200
 	amount_of_prefixs_used_light_mode = 50
 
-	amount_of_sufixs_used  = 1000
+	amount_of_sufixs_used  = len(BASIC_SUFIXS)
 	amount_of_prefixs_used = 200
 
 	amount_of_numericpat_used = 516
@@ -331,9 +331,7 @@ func processFileUser(fileName, outputFileName string) {
 				continue
 			}
 			combinations := generateUsernames(line)
-			for _, e := range combinations {
-				completList = append(completList, e)
-			}
+			completList = append(completList, combinations...)
 		}
 		err = saveListToFile(completList, outputFileName)
 		if err != nil {
@@ -554,9 +552,7 @@ func mlProcessPwd(list_ []string, mlModel string, numberNeighbours int) []string
 		for _, w := range list_ {
 			verbosePrint("[+] Processing -> " + w)
 			if neigh, ok := parsed[w]; ok {
-				for _, n := range neigh {
-					wordsList = append(wordsList, n)
-				}
+				wordsList = append(wordsList, neigh...)
 			}
 		}
 		verbosePrint(fmt.Sprintf("[+] Neighbors found successfully, %d Words in total.", len(wordsList)))
@@ -714,18 +710,6 @@ func massiveMode(list_ []string, outputFileName string) {
 	close(outChan)
 	writer.Flush()
 	fmt.Printf("\n[+] Finished. Output saved to %s\n", outputFileName)
-}
-
-func containsRuneUpperAfterFirst(s string) bool {
-	for i, r := range s {
-		if i == 0 {
-			continue
-		}
-		if unicode.IsUpper(r) {
-			return true
-		}
-	}
-	return false
 }
 
 func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
@@ -928,6 +912,14 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
                 }
             }
         }
+		// word + suffix + symbol
+		for _, a := range basicPattern {
+			for _, b := range BASIC_SUFIXS[:limitSuf] {
+				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
+					nonRepeatedList = append(nonRepeatedList, a+b+c)
+				}
+			}
+		}
     }
 
     // ✅ Dedupe al final (ORIGINAL)
