@@ -17,7 +17,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"time"
 	"unicode"
 
 	"golang.org/x/text/unicode/norm"
@@ -609,107 +608,90 @@ func isWritable(path string) bool {
 }
 
 func workerGenerate(word string, FULL_MODE, LIGHT_MODE bool, outChan chan<- string, batchSize int, wg *sync.WaitGroup) {
-	defer wg.Done()
-	batch := []string{}
-	for _, line := range generatePasswordList(word, FULL_MODE, LIGHT_MODE) {
-		batch = append(batch, line)
-		if len(batch) >= batchSize {
-			outChan <- strings.Join(batch, "\n")
-			batch = []string{}
-		}
-	}
-	if len(batch) > 0 {
-		outChan <- strings.Join(batch, "\n")
-	}
+    defer wg.Done()
+    batch := []string{}
+    for _, line := range generatePasswordList(word, FULL_MODE, LIGHT_MODE) {
+        batch = append(batch, line)
+        if len(batch) >= batchSize {
+            outChan <- strings.Join(batch, "\n")
+            batch = []string{}
+        }
+    }
+    if len(batch) > 0 {
+        outChan <- strings.Join(batch, "\n")
+    }
 }
 
 func massiveMode(list_ []string, outputFileName string) {
-	verbosePrint("[!] Massive mode ENABLED")
-	VERBOSE = true
-	if !OUTPUT_FILE_BOOLEAN {
-		outputFileName = "output.txt"
-		verbosePrint("[!] Output file required for the massive mode. Saving results to -> " + outputFileName)
-	}
+    verbosePrint("[!] Massive mode ENABLED")
+    VERBOSE = true
+    if !OUTPUT_FILE_BOOLEAN {
+        outputFileName = "output.txt"
+        verbosePrint("[!] Output file required for the massive mode. Saving results to -> " + outputFileName)
+    }
 
-	cpuCores := runtime.NumCPU()
-	if FULL_MODE {
-		ram, err := getTotalRAM()
-		if err == nil {
-			verbosePrint(fmt.Sprintf("[i] %v GB RAM detected.", ram))
-			if ram <= 31 {
-				cpuCores = cpuCores / 2
-				if cpuCores == 0 {
-					cpuCores = 1
-				}
-			}
-			if ram <= 15 {
-				verbosePrint("[!] WARNING! Full mode + multicore could saturate RAM, crash, and go slower than expected. \n[!] We will use just few cores... Go for a coffe.")
-				cpuCores = cpuCores / 4
-				if cpuCores == 0 {
-					cpuCores = 1
-				}
-			}
-		}
-	}
-	verbosePrint(fmt.Sprintf("[+] Using %d CPU cores", cpuCores))
+    cpuCores := runtime.NumCPU()
+    if FULL_MODE {
+        ram, err := getTotalRAM()
+        if err == nil {
+            verbosePrint(fmt.Sprintf("[i] %.2f GB RAM detected.", ram))
+            if ram <= 31 {
+                cpuCores = cpuCores / 2
+                if cpuCores == 0 {
+                    cpuCores = 1
+                }
+            }
+            if ram <= 15 {
+                verbosePrint("[!] WARNING! Full mode + multicore could saturate RAM, crash, and go slower than expected. \n[!] We will use just few cores... Go for a coffe.")
+                cpuCores = cpuCores / 4
+                if cpuCores == 0 {
+                    cpuCores = 1
+                }
+            }
+        }
+    }
+    verbosePrint(fmt.Sprintf("[+] Using %d CPU cores", cpuCores))
 
-	outputSizeLines := len(list_) * 900000
-	if LIGHT_MODE {
-		outputSizeLines = len(list_) * 7700
-	}
-	if FULL_MODE {
-		outputSizeLines = len(list_) * 5000000
-	}
-	avgLineSizeBytes := 16
-	estimatedSizeBytes := int64(outputSizeLines * avgLineSizeBytes)
-	estimatedSizeGB := float64(estimatedSizeBytes) / (1024.0 * 1024.0 * 1024.0)
-	verbosePrint(fmt.Sprintf("[i] Expected file size -> %.2f GB / %d Lines (aprox.)", estimatedSizeGB, outputSizeLines))
+    outFile, err := os.Create(outputFileName)
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
+        return
+    }
+    defer outFile.Close()
+    writer := bufio.NewWriter(outFile)
 
-	outFile, err := os.Create(outputFileName)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
-		return
-	}
-	defer outFile.Close()
-	writer := bufio.NewWriter(outFile)
+    outChan := make(chan string, 500)
+    var wg sync.WaitGroup
 
-	outChan := make(chan string, 500)
-	var wg sync.WaitGroup
-	sem := make(chan struct{}, cpuCores)
+    // 1) Lanzar writer goroutine primero
+    doneWriter := make(chan struct{})
+    go func() {
+        for chunk := range outChan {
+            writer.WriteString(chunk + "\n")
+        }
+        writer.Flush()
+        close(doneWriter)
+    }()
 
-	//totalWords := len(list_)
-	//doneWords := 0
-	for _, w := range list_ {
-		wg.Add(1)
-		sem <- struct{}{}
-		go func(word string) {
-			defer func() { <-sem }()
-			workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, 200, &wg)
-		}(w)
-	}
+    // 2) Lanzar workers
+    sem := make(chan struct{}, cpuCores)
+    for _, w := range list_ {
+        wg.Add(1)
+        sem <- struct{}{}
+        go func(word string) {
+            defer func() { <-sem }()
+            workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, 200, &wg)
+        }(w)
+    }
 
-	// writer goroutine
-	go func() {
-		for chunk := range outChan {
-			writer.WriteString(chunk + "\n")
-		}
-	}()
+    // 3) Esperar workers
+    wg.Wait()
+    close(outChan)   // cerrar canal cuando ya no habrá más datos
 
-	// progress monitor
-	go func() {
-		for {
-			// count ready by checking wait group (not straightforward) - approximate by sleep and estimate
-			time.Sleep(2 * time.Second)
-			// We cannot directly know processed; show spinner instead
-			fmt.Printf(".")
-		}
-	}()
+    // 4) Esperar al writer
+    <-doneWriter
 
-	// wait for workers then close channel
-	wg.Wait()
-	close(outChan)
-	writer.Flush()
-	fmt.Printf("\n[+] Finished. Output saved to %s\n", outputFileName)
+    fmt.Printf("\n[+] Finished. Output saved to %s\n", outputFileName)
 }
 
 func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
