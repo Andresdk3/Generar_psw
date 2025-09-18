@@ -44,7 +44,7 @@ var (
 
 	// Patterns (copiados del python)
 	BASIC_SUFIXS = []string{
-		"1", "2", "123", "12", "3", "7", "13", "5", "4", "11", "!", "07", "23", "22", "01", "21", "8", "14", "10", "08", "6", "06", "9", "15", "16", "69", "18", "17", "24", "05", ".", "09", "88", "19", "25", "20", "03", "0", "04", "27", "89", "02", "99", "26", "101", "77", "1234", "28", "33", "00", "2007", "92", "87", "93", "2006", "*", "29", "94", "90", "2008", "91", "95", "86", "55", "30", "666", "143", "31", "96", "85", "44", "32", "007", "34", "4ever", "84", "45", "#1", "2005", "78", "98", "66", "83", "82", "97", "1994", "79", "100", "1992", "1993", "81", "4life", "4eva", "12345", "1995", "1991", "777", "1990", "420", "76", "56", "111", "1989", "2000", "1987", "321", "2009", "67", "80", "75", "2004", "1996", "42", "1988", "35", "74", "72", "1986", "1985", "001", "36", "73", "54", "2003", "456", "50", "!!", "333", "68", "@", "1984", "64", "37", "65", "40", "71", "2002", "4u", "123456", "43", "555", "911", "1997", "52", "?", "999", "1983", "1982", "47", "$", "57", "2001", "41", "@hotmail.com", "1980", "38", "4me", "1981", "63", "46", "70", "2010", "58", "48", "222", "51", "62", "1979", "121", "619", "53", "789", "59", "39", "112", "1998", "1978", "000", "888", "49", "**", "247", "234", "61", "60", "..", "213", "1977", "1212", "200", "159", "1999", "@yahoo.com", "1976", "182", "786", "1!", ".com", "<3", "1975", ")", "125", "187", "214", "2k7", "147", "...", "1974", ".1", "102", "1973", "!!!", "4e", "123456789", "411", "212", "6969", "1010", "305", "124", "012", "1972", "345", "360", "1969", "009", "316", "1970", "313", "4lyf", "711", "210", "808", "122", "1313", "987", "311", "120", "#", "1971", "444", "369", "1000", "008", "500", "2012", "323", "2011", "211", "1111", "246", "215", ",", "300", "135", "567", "117", "003", "103", "113", "1968", "1122", "225", "713", "132", "209", "510", "002", "520", "1221", "310", "223", "105", "~", "127", "100pre", "110", "1967", "818", "011", "1213", "1012", "202", "312", "128", "109", "+", "108", "126", "098", "1966", "2k6", "1965", "909", "1.", "118", "1020", "3000", "115", "678", "714", "415", "1964", "013", "1123", "107", "718", "129", "]", "831", "010", "2121", "4l", "005", "145", "314", "224", "104", "2525", "131", ";", "221", "626", "1314", "2020", "357", "4lyfe", "114", "318", "1210", "1223", "916", "1023", "1230", "106", "900", "216", "006", "116", "1011", "2323", "201", "2468", "4321", "119", "504", "3r", "1963", "1214", "217", "315", "2u", "512", "1224", "412", "0123", "1231", "1022", "1121", "1013", "1001", "258", "890", "134", "150", "220", "421", "1021", "1220", "1024", "1218", "1215", "317", "199", "521", "1216", "***", "303", "515", "004", "707", "$$", "206", "1014", "219", "1025", "1211", "1962", "218", "320", "1960", "1217", "413", "4444", "727", "1205", "1225", "`", "912", "812", "410", "0n", "813", "227", "2k", "014", "100%", "1206", "231", "1228", "505", "1029", "7777", "0000", "1017", "1015", "1107", "133", "1112", "325", "130", "513", "4LIFE", "324", "@1", "1016", "511", "1018", "423", "180", "1026", "021", "1125", "1031", "1028", "'", "1203", "1204", "1104", "023", "2k8", "612", "400", "721", "805", "1105", "2112", "1124", "1120", "4you", "525", "1207", "228", "205", "913", "2222", "2013", "#2", "1103", "1202", "1961", "1027", "617", "1106", "1019", "1127", "717", "1227", "156", "250", "4evr", "1208", "712", "600", "1219", "254", "1414", "017", "226", "408", "925", "723", "322", "1959", "137", "817", "319", "2424", "151", "809", "910", "232", "/", "203", "1229", "414", "326", "327", "616", "1515", "1226", "1030", "516", "1*", "1201", "2x", "365", "144", "1129", "123!", "623", "1209", "523", "611", "1126", "1005", "9999", "1128", "=", "1004", "!1", "1102", "710", "1002", "654", "1101", "613", "419", "1108", "422", "921", "198", "1130", "425", "123.", "923", "915", "169", "615", "015", "416", "#3", "951", "610", "141", "190", "816", "328", "1958", "811", "720", "016", "828", "426", "702", "919", "191", "1a", "522", "1007", "501", "018", "823", "189", "715", "8888", "918", "54321", "716", "256", "1003", "424", "1234567", "963", "138", "@123", "207", "427", "2345", "787", "5150", "852", "242", "914", "621", "331", "4EVER", "741", "637", "614", ".123", "562", "252", "920", "301", "1109", "1222", "153", "330", "1e", "417", "1006", "530", "800", "0506", "1957", "*1", "245", "1956", "517", "622", "155", "235", "753", "514", "329", ":)", "1113", "0101", "157", "821", "722", "810", "5678", "429", "2526", "724", "527", "024", "069", "524", "418", "0607", "208", "922", "624", "142", "168", "152", "2me", "0808", "1008", "929", "561", "2b", "700", "1717", "928", "815", "233", "518", "136", "177", "0708", "625", "0102", "725", "901", "022", "822", "917", "0909", "519", "334", "526", "248", "183", "731", "927", "531", "1117", "167", "602", "1114", "1818", "814", "5555", "529", "019", "620", "1n", "1616", "1955", "824", "618", "%", "1009", "192", "719", "503", "924", "1919", "229", "1st", "@aol.com", "926", "'s", "820", "430", "0707", "528", "188", "181", "4EVA", "989", "432", "1412", "204", "404", "1110", "0406", "304", "428", "5000", "0405", "825", "0809", "3s", "??", "628", "0204", "281", "2212", "3d", "0205", "197", "0202", "1115", "1954", "726", "728", "237", "0505", "757", "1116", "302", "140", "954", "559", "601", "747", "1516", "405", "730", "0305", "243", "146", "154", "509", "729", "627", "0306", "1415", "\"", "350", "629", "1324", "696", "0507", "0711", "0214", "253", "269", "407", "0407", "0304", "306", "4U", "650", "2310", "171", "236", "2529", "630", "1905", "239", "2528", "450", "1s", "2527", "139", "025", "195", "&", "0303", "123*", "1118", "454", "0606", "2530", "0203", "876", "930", "178", "\\'", "2210", "0107", "0404", "027", "0408", "1907", "819", "0812", "409", "158", "908", "543", "401", "230", "0210", "1312", "0308", "307", "1love", "240", "0412", "1369", "1310", "1953", "826", "829", "2!", "165", "2105", "161", "606", "1234567890", "160", "148", "904", "0311", "830", "0307", "0103", "2211", "2014", "193", ".12", "0110", "308", "827", "1307", "0420", "0206", "1119", "0207", "@@", "0911", "0212", "149", "990", "0105", "2123", ".2", "255", "309", "(L)", "241", "3333", "801", "0912", "185", "1432", "0104", "6666", "0987", "175", "163", "502", "1950", "671", "0106", "0208", "765", "251", "337", "1908", "170", "445", "166", "028", "173", "257", "3y", "031", "2107", "1888", "2524", "123123", "196", "&me", "1402", "0608", "2311", "1331", "!@#", "1903", "1305", "0312", "1235", "1@", "956", "174", "2312", "0509", "275", "2523", "0508", "172", "0512", "1311", "1306", "1952", "1200", "90210", "1512", "1408", "1233", "026", "1411", "2727", "1920", "978", "184", "5683", "1690", "0810", "2510", "244", "0709", "565", "2410", "667", "238", "090", "0108", "164", "12345678", "55555", "4u2", "0411", "1912", "#7", "3n", "2412", "2205", "1812", "1904", "0811", "2103", "402", "0612", "0309", "973", "0907", "336", "14344", "1410", "123321", "1906", "1323", "289", "903", "\\", "0211", "0209", "1405", "2106", "2828", "0712", "803", "2580", "2626", "267", "0321", "1308", "1718", ">", "2207", "1304", "262", "4ev", "077", "179", "343", "2531", "2110", "3030", "1508", "1407", "12!", "2203", "162", "0x", "585", "0906", "176", "1821", "1606", "2303",
+		"1", "2", "123", "12", "3", "7", "13", "5", "4", "11", "!", "07", "23", "22", "01", "21", "8", "14", "10", "08", "6", "06", "9", "15", "16", "69", "18", "17", "24", "05", ".", "09", "88", "19", "25", "20", "03", "0", "04", "27", "89", "02", "99", "26", "101", "77", "1234", "28", "33", "00", "2007", "92", "87", "93", "2006", "*", "29", "94", "90", "2008", "91", "95", "86", "55", "30", "666", "143", "31", "96", "85", "44", "32", "007", "34", "4ever", "84", "45", "#1", "2005", "78", "98", "66", "83", "82", "97", "1994", "79", "100", "1992", "1993", "81", "4life", "4eva", "12345", "1995", "1991", "777", "1990", "420", "76", "56", "111", "1989", "2000", "1987", "321", "2009", "67", "80", "75", "2004", "1996", "42", "1988", "35", "74", "72", "1986", "1985", "001", "36", "73", "54", "2003", "456", "50", "!!", "333", "68", "@", "1984", "64", "37", "65", "40", "71", "2002", "4u", "123456", "43", "555", "911", "1997", "52", "?", "999", "1983", "1982", "47", "$", "57", "2001", "41", "@hotmail.com", "1980", "38", "4me", "1981", "63", "46", "70", "2010", "58", "48", "222", "51", "62", "1979", "121", "619", "53", "789", "59", "39", "112", "1998", "1978", "000", "888", "49", "**", "247", "234", "61", "60", "..", "213", "1977", "1212", "200", "159", "1999", "@yahoo.com", "1976", "182", "786", "1!", ".com", "<3", "1975", ")", "125", "187", "214", "2k7", "147", "...", "1974", ".1", "102", "1973", "!!!", "4e", "123456789", "411", "212", "6969", "1010", "305", "124", "012", "1972", "345", "360", "1969", "009", "316", "1970", "313", "4lyf", "711", "210", "808", "122", "1313", "987", "311", "120", "#", "1971", "444", "369", "1000", "008", "500", "2012", "323", "2011", "211", "1111", "246", "215", ",", "300", "135", "567", "117", "003", "103", "113", "1968", "1122", "225", "713", "132", "209", "510", "002", "520", "1221", "310", "223", "105", "~", "127", "100pre", "110", "1967", "818", "011", "1213", "1012", "202", "312", "128", "109", "+", "108", "126", "098", "1966", "2k6", "1965", "909", "1.", "118", "1020", "3000", "115", "678", "714", "415", "1964", "013", "1123", "107", "718", "129", "]", "831", "010", "2121", "4l", "005", "145", "314", "224", "104", "2525", "131", ";", "221", "626", "1314", "2020", "357", "4lyfe", "114", "318", "1210", "1223", "916", "1023", "1230", "106", "900", "216", "006", "116", "1011", "2323", "201", "2468", "4321", "119", "504", "3r", "1963", "1214", "217", "315", "2u", "512", "1224", "412", "0123", "1231", "1022", "1121", "1013", "1001", "258", "890", "134", "150", "220", "421", "1021", "1220", "1024", "1218", "1215", "317", "199", "521", "1216", "***", "303", "515", "004", "707", "$$", "206", "1014", "219", "1025", "1211", "1962", "218", "320", "1960", "1217", "413", "4444", "727", "1205", "1225", "`", "912", "812", "410", "0n", "813", "227", "2k", "014", "100%", "1206", "231", "1228", "505", "1029", "7777", "0000", "1017", "1015", "1107", "133", "1112", "325", "130", "513", "4LIFE", "324", "@1", "1016", "511", "1018", "423", "180", "1026", "021", "1125", "1031", "1028", "'", "1203", "1204", "1104", "023", "2k8", "612", "400", "721", "805", "1105", "2112", "1124", "1120", "4you", "525", "1207", "228", "205", "913", "2222", "2013", "#2", "1103", "1202", "1961", "1027", "617", "1106", "1019", "1127", "717", "1227", "156", "250", "4evr", "1208", "712", "600", "1219", "254", "1414", "017", "226", "408", "925", "723", "322", "1959", "137", "817", "319", "2424", "151", "809", "910", "232", "/", "203", "1229", "414", "326", "327", "616", "1515", "1226", "1030", "516", "1*", "1201", "2x", "365", "144", "1129", "123!", "623", "1209", "523", "611", "1126", "1005", "9999", "1128", "=", "1004", "!1", "1102", "710", "1209", "523", "611", "1126", "1005", "9999", "1128", "=", "1004", "!1", "1102", "710", "1101", "654", "1101", "613", "419", "1108", "422", "921", "198", "1130", "425", "123.", "923", "915", "169", "615", "015", "416", "#3", "951", "610", "141", "190", "816", "328", "1958", "811", "720", "016", "828", "426", "702", "919", "191", "1a", "522", "1007", "501", "018", "823", "189", "715", "8888", "918", "54321", "716", "256", "1003", "424", "1234567", "963", "138", "@123", "207", "427", "2345", "787", "5150", "852", "242", "914", "621", "331", "4EVER", "741", "637", "614", ".123", "562", "252", "920", "301", "1109", "1222", "153", "330", "1e", "417", "1006", "530", "800", "0506", "1957", "*1", "245", "1956", "517", "622", "155", "235", "753", "514", "329", ":)", "1113", "0101", "157", "821", "722", "810", "5678", "429", "2526", "724", "527", "024", "069", "524", "418", "0607", "208", "922", "624", "142", "168", "152", "2me", "0808", "1008", "929", "561", "2b", "700", "1717", "928", "815", "233", "518", "136", "177", "0708", "625", "0102", "725", "901", "022", "822", "917", "0909", "519", "334", "526", "248", "183", "731", "927", "531", "1117", "167", "602", "1114", "1818", "814", "5555", "529", "019", "620", "1n", "1616", "1955", "824", "618", "%", "1009", "192", "719", "503", "924", "1919", "229", "1st", "@aol.com", "926", "'s", "820", "430", "0707", "528", "188", "181", "4EVA", "989", "432", "1412", "204", "404", "1110", "0406", "304", "428", "5000", "0405", "825", "0809", "3s", "??", "628", "0204", "281", "2212", "3d", "0205", "197", "0202", "1115", "1954", "726", "728", "237", "0505", "757", "1116", "302", "140", "954", "559", "601", "747", "1516", "405", "730", "0305", "243", "146", "154", "509", "729", "627", "0306", "1415", "\"", "350", "629", "1324", "696", "0507", "0711", "0214", "253", "269", "407", "0407", "0304", "306", "4U", "650", "2310", "171", "236", "2529", "630", "1905", "239", "2528", "450", "1s", "2527", "139", "025", "195", "&", "0303", "123*", "1118", "454", "0606", "2530", "0203", "876", "930", "178", "\\'", "2210", "0107", "0404", "027", "0408", "1907", "819", "0812", "409", "158", "908", "543", "401", "230", "0210", "1312", "0308", "307", "1love", "240", "0412", "1369", "1310", "1953", "826", "829", "2!", "165", "2105", "161", "606", "1234567890", "160", "148", "904", "0311", "830", "0307", "0103", "2211", "2014", "193", ".12", "0110", "308", "827", "1307", "0420", "0206", "1119", "0207", "@@", "0911", "0212", "149", "990", "0105", "2123", ".2", "255", "309", "(L)", "241", "3333", "801", "0912", "185", "1432", "0104", "6666", "0987", "175", "163", "502", "1950", "671", "0106", "0208", "765", "251", "337", "1908", "170", "445", "166", "028", "173", "257", "3y", "031", "2107", "1888", "2524", "123123", "196", "&me", "1402", "0608", "2311", "1331", "!@#", "1903", "1305", "0312", "1235", "1@", "956", "174", "2312", "0509", "275", "2523", "0508", "172", "0512", "1311", "1306", "1952", "1200", "90210", "1512", "1408", "1233", "026", "1411", "2727", "1920", "978", "184", "5683", "1690", "0810", "2510", "244", "0709", "565", "2410", "667", "238", "090", "0108", "164", "12345678", "55555", "4u2", "0411", "1912", "#7", "3n", "2412", "2205", "1812", "1904", "0811", "2103", "402", "0612", "0309", "973", "0907", "336", "14344", "1410", "123321", "1906", "1323", "289", "903", "\\", "0211", "0209", "1405", "2106", "2828", "0712", "803", "2580", "2626", "267", "0321", "1308", "1718", ">", "2207", "1304", "262", "4ev", "077", "179", "343", "2531", "2110", "3030", "1508", "1407", "12!", "2203", "162", "0x", "585", "0906", "176", "1821", "1606", "2303",
 	}
 
 	BASIC_PREFIXS = []string{
@@ -56,7 +56,7 @@ var (
 	}
 
 	SYMBOLIC_PATTERNS = []string{
-		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", "///", ">", "++", "??", "!@", "\\", ":)", "ื", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "´", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
+		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", "///", ">", "++", "??", "!@", "\\", ":)", "ท", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "´", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
 	}
 )
 
@@ -367,39 +367,60 @@ func processInputUser(input_, outputFileName string) {
 	}
 }
 
+// processPasswd optimizada para uso eficiente de memoria
 func processPasswd(wordsList []string, outputFileName string) {
-	verbosePrint("[+] Creating dictionary.")
-	// massive mode checks
-	if len(wordsList) >= 2 && FULL_MODE {
-		massiveMode(wordsList, outputFileName)
-		return
-	}
-	if len(wordsList) >= 10 && !LIGHT_MODE {
-		massiveMode(wordsList, outputFileName)
-		return
-	}
-	if len(wordsList) >= 100 {
-		massiveMode(wordsList, outputFileName)
-		return
-	}
+    verbosePrint("[+] Creating dictionary.")
+    
+    // Detección mejorada para modo massive
+    shouldUseMassive := false
+    if len(wordsList) >= 100 {
+        shouldUseMassive = true
+    } else if len(wordsList) >= 10 && !LIGHT_MODE {
+        shouldUseMassive = true
+    } else if len(wordsList) >= 2 && FULL_MODE {
+        shouldUseMassive = true
+    }
+    
+    if shouldUseMassive {
+        massiveMode(wordsList, outputFileName)
+        return
+    }
 
-	finalList := []string{}
-	if !OUTPUT_FILE_BOOLEAN {
-		for _, w := range wordsList {
-			finalList = append(finalList, generatePasswordList(w, FULL_MODE, LIGHT_MODE)...)
-		}
-		for _, e := range finalList {
-			fmt.Println(e)
-		}
-	} else {
-		for _, w := range wordsList {
-			finalList = append(finalList, generatePasswordList(w, FULL_MODE, LIGHT_MODE)...)
-		}
-		err := saveListToFile(finalList, outputFileName)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving file: %v\n", err)
-		}
-	}
+    // Para listas pequeñas, usar el método optimizado normal
+    if !OUTPUT_FILE_BOOLEAN {
+        // Streaming directo a stdout
+        for _, w := range wordsList {
+            generatePasswordListStreaming(w, FULL_MODE, LIGHT_MODE, func(password string) {
+                fmt.Println(password)
+            })
+        }
+    } else {
+        // Escribir directamente a archivo sin acumular en memoria
+        outFile, err := os.Create(outputFileName)
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
+            return
+        }
+        defer outFile.Close()
+        
+        writer := bufio.NewWriterSize(outFile, 32*1024) // 32KB buffer
+        defer writer.Flush()
+        
+        for _, w := range wordsList {
+            generatePasswordListStreaming(w, FULL_MODE, LIGHT_MODE, func(password string) {
+                writer.WriteString(password)
+                writer.WriteByte('\n')
+                
+                // Flush periódico
+                if writer.Buffered() > 16*1024 {
+                    writer.Flush()
+                }
+            })
+        }
+        
+        writer.Flush()
+        verbosePrint("[+] Dictionary saved successfully to: " + outputFileName)
+    }
 }
 
 // findNeighbours - linux path uses python helper; windows path uses fasttext.exe batch if present.
@@ -607,21 +628,39 @@ func isWritable(path string) bool {
 	return true
 }
 
+// workerGenerate optimizada para usar menos memoria
 func workerGenerate(word string, FULL_MODE, LIGHT_MODE bool, outChan chan<- string, batchSize int, wg *sync.WaitGroup) {
     defer wg.Done()
-    batch := []string{}
-    for _, line := range generatePasswordList(word, FULL_MODE, LIGHT_MODE) {
-        batch = append(batch, line)
+    
+    // Buffer reutilizable para construcción de strings
+    var builder strings.Builder
+    builder.Grow(64) // Pre-allocate para strings típicos
+    
+    // Procesar y enviar resultados en streaming
+    count := 0
+    batch := make([]string, 0, batchSize)
+    
+    generatePasswordListStreaming(word, FULL_MODE, LIGHT_MODE, func(password string) {
+        batch = append(batch, password)
+        count++
+        
         if len(batch) >= batchSize {
             outChan <- strings.Join(batch, "\n")
-            batch = []string{}
+            // Reutilizar slice limpiando referencias
+            for i := range batch {
+                batch[i] = ""
+            }
+            batch = batch[:0]
         }
-    }
+    })
+    
+    // Enviar último batch si tiene datos
     if len(batch) > 0 {
         outChan <- strings.Join(batch, "\n")
     }
 }
 
+// massiveMode optimizada para mejor manejo de memoria
 func massiveMode(list_ []string, outputFileName string) {
     verbosePrint("[!] Massive mode ENABLED")
     VERBOSE = true
@@ -658,43 +697,60 @@ func massiveMode(list_ []string, outputFileName string) {
         return
     }
     defer outFile.Close()
-    writer := bufio.NewWriter(outFile)
+    
+    // Buffer más grande para escritura menos frecuente
+    writer := bufio.NewWriterSize(outFile, 64*1024) // 64KB buffer
+    defer writer.Flush()
 
-    outChan := make(chan string, 500)
+    // Canal con buffer más grande para reducir bloqueos
+    outChan := make(chan string, 1000)
     var wg sync.WaitGroup
 
-    // 1) Lanzar writer goroutine primero
+    // Writer goroutine optimizada
     doneWriter := make(chan struct{})
     go func() {
+        defer close(doneWriter)
         for chunk := range outChan {
-            writer.WriteString(chunk + "\n")
+            writer.WriteString(chunk)
+            writer.WriteByte('\n')
+            
+            // Flush periódico para evitar que el buffer crezca demasiado
+            if writer.Buffered() > 32*1024 {
+                writer.Flush()
+            }
         }
         writer.Flush()
-        close(doneWriter)
     }()
 
-    // 2) Lanzar workers
+    // Semáforo para controlar concurrencia
     sem := make(chan struct{}, cpuCores)
+    
+    // Procesar palabras con worker pool optimizado
     for _, w := range list_ {
         wg.Add(1)
         sem <- struct{}{}
+        
         go func(word string) {
-            defer func() { <-sem }()
-            workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, 200, &wg)
+            defer func() { 
+                <-sem
+                wg.Done()
+            }()
+            
+            // Batch size mayor para reducir overhead de canal
+            batchSize := 500
+            workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, batchSize, &sync.WaitGroup{})
         }(w)
     }
 
-    // 3) Esperar workers
     wg.Wait()
-    close(outChan)   // cerrar canal cuando ya no habrá más datos
-
-    // 4) Esperar al writer
+    close(outChan)
     <-doneWriter
 
     fmt.Printf("\n[+] Finished. Output saved to %s\n", outputFileName)
 }
 
-func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
+// generatePasswordListStreaming - Versión streaming que evita acumular toda la lista en memoria
+func generatePasswordListStreaming(word string, FULL_MODE, LIGHT_MODE bool, callback func(string)) {
     localAmountSuf := amount_of_sufixs_used
     localAmountPref := amount_of_prefixs_used
     if LIGHT_MODE {
@@ -702,115 +758,117 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
         localAmountPref = amount_of_prefixs_used_light_mode
     }
 
-    // Pre-calcular tamaño estimado para optimizar memoria
-    estimatedSize := 1000
-    if FULL_MODE {
-        estimatedSize = 50000
-    } else if LIGHT_MODE {
-        estimatedSize = 200
-    }
+    // Set para tracking de duplicados - más eficiente que slice para lookups
+    seen := make(map[string]struct{}, 1000)
     
-    nonRepeatedList := make([]string, 0, estimatedSize)
-    basicPattern := make([]string, 0, 20)
+    // Helper para emitir sin duplicados
+    emit := func(s string) {
+        if _, exists := seen[s]; !exists {
+            seen[s] = struct{}{}
+            callback(s)
+        }
+    }
+
+    // Buffer reutilizable para construcción de strings
+    var builder strings.Builder
+    builder.Grow(64)
     
     w := strings.ToLower(strings.TrimSpace(word))
     wNoPunct := removeAccents(w)
     
-    // Patrones básicos (EXACTAMENTE como en la versión original)
-    basicPattern = append(basicPattern,
-        w,
-        strings.ToUpper(w),
-        strings.Title(w),
-        wNoPunct,
-        strings.ToUpper(wNoPunct),
-        strings.Title(wNoPunct),
-    )
-    
-    // 🚫 RESTAURAR LA LÓGICA ORIGINAL COMPLETA sin cambios
-    
-    // Transformación a → @ (ORIGINAL)
-    transform1 := []string{}
-    for _, item := range basicPattern {
-        item2 := strings.ReplaceAll(item, "a", "@")
-        item2 = strings.ReplaceAll(item2, "A", "@")
-        transform1 = append(transform1, item2)
+    // Patrones básicos - procesar inmediatamente en lugar de almacenar
+    basicPatterns := []string{
+        w, strings.ToUpper(w), strings.Title(w),
+        wNoPunct, strings.ToUpper(wNoPunct), strings.Title(wNoPunct),
     }
-    basicPattern = append(basicPattern, transform1...)
-
-    // Transformación o → 0 (ORIGINAL)
-    transform2 := []string{}
-    for _, item := range basicPattern {
-        item2 := strings.ReplaceAll(item, "o", "0")
-        item2 = strings.ReplaceAll(item2, "O", "0")
-        transform2 = append(transform2, item2)
+    
+    // Aplicar transformaciones y emitir inmediatamente
+    allBasicPatterns := make([]string, 0, len(basicPatterns)*8) // Pre-allocate
+    allBasicPatterns = append(allBasicPatterns, basicPatterns...)
+    
+    // Transformación a → @
+    for _, item := range basicPatterns {
+        transformed := strings.ReplaceAll(strings.ReplaceAll(item, "a", "@"), "A", "@")
+        allBasicPatterns = append(allBasicPatterns, transformed)
     }
-    basicPattern = append(basicPattern, transform2...)
-
+    
+    // Transformación o → 0
+	for _, item := range allBasicPatterns { // Snapshot del tamaño actual
+		transformed := strings.ReplaceAll(strings.ReplaceAll(item, "o", "0"), "O", "0")
+		allBasicPatterns = append(allBasicPatterns, transformed)
+	}
+    
     if !LIGHT_MODE {
-        // Transformación e → € (ORIGINAL)
-        transform3 := []string{}
-        for _, item := range basicPattern {
-            item2 := strings.ReplaceAll(item, "e", "€")
-            item2 = strings.ReplaceAll(item2, "E", "€")
-            transform3 = append(transform3, item2)
+        currentLen := len(allBasicPatterns)
+        
+        // Transformación e → €
+        for i := 0; i < currentLen; i++ {
+            item := allBasicPatterns[i]
+            transformed := strings.ReplaceAll(strings.ReplaceAll(item, "e", "€"), "E", "€")
+            allBasicPatterns = append(allBasicPatterns, transformed)
         }
-        basicPattern = append(basicPattern, transform3...)
-
-        // Transformación e → 3 (ORIGINAL)
-        transform4 := []string{}
-        for _, item := range basicPattern {
-            item2 := strings.ReplaceAll(item, "e", "3")
-            item2 = strings.ReplaceAll(item2, "E", "3")
-            transform4 = append(transform4, item2)
+        
+        currentLen = len(allBasicPatterns)
+        // Transformación e → 3
+        for i := 0; i < currentLen; i++ {
+            item := allBasicPatterns[i]
+            transformed := strings.ReplaceAll(strings.ReplaceAll(item, "e", "3"), "E", "3")
+            allBasicPatterns = append(allBasicPatterns, transformed)
         }
-        basicPattern = append(basicPattern, transform4...)
-
-        // Transformación s → $ (ORIGINAL)
-        transform5 := []string{}
-        for _, item := range basicPattern {
-            item2 := strings.ReplaceAll(item, "s", "$")
-            item2 = strings.ReplaceAll(item2, "S", "$")
-            transform5 = append(transform5, item2)
+        
+        currentLen = len(allBasicPatterns)
+        // Transformación s → $
+        for i := 0; i < currentLen; i++ {
+            item := allBasicPatterns[i]
+            transformed := strings.ReplaceAll(strings.ReplaceAll(item, "s", "$"), "S", "$")
+            allBasicPatterns = append(allBasicPatterns, transformed)
         }
-        basicPattern = append(basicPattern, transform5...)
-
-        // Transformación l → 1 (ORIGINAL)
-        transform6 := []string{}
-        for _, item := range basicPattern {
-            item2 := strings.ReplaceAll(item, "l", "1")
-            item2 = strings.ReplaceAll(item2, "L", "1")
-            transform6 = append(transform6, item2)
+        
+        currentLen = len(allBasicPatterns)
+        // Transformación l → 1
+        for i := 0; i < currentLen; i++ {
+            item := allBasicPatterns[i]
+            transformed := strings.ReplaceAll(strings.ReplaceAll(item, "l", "1"), "L", "1")
+            allBasicPatterns = append(allBasicPatterns, transformed)
         }
-        basicPattern = append(basicPattern, transform6...)
     }
-
-    // Hacer unique de basicPattern aquí (como en el original)
-    basicPattern = uniquePreserve(basicPattern)
-    nonRepeatedList = append(nonRepeatedList, basicPattern...)
-
-    // word + suffixs (ORIGINAL)
+    
+    // Emitir patrones básicos únicos
+    for _, pattern := range allBasicPatterns {
+        emit(pattern)
+    }
+    
+    // Límites para optimización
     limitSuf := localAmountSuf
     if limitSuf > len(BASIC_SUFIXS) {
         limitSuf = len(BASIC_SUFIXS)
     }
-    for _, a := range basicPattern {
-        for _, b := range BASIC_SUFIXS[:limitSuf] {
-            nonRepeatedList = append(nonRepeatedList, a+b)
-        }
-    }
-
-    // prefix + word (ORIGINAL)
     limitPref := localAmountPref
     if limitPref > len(BASIC_PREFIXS) {
         limitPref = len(BASIC_PREFIXS)
     }
-    for _, a := range BASIC_PREFIXS[:limitPref] {
-        for _, b := range basicPattern {
-            nonRepeatedList = append(nonRepeatedList, a+b)
+    
+    // word + suffixs - usar builder para eficiencia
+    for _, a := range allBasicPatterns {
+        for i := 0; i < limitSuf; i++ {
+            builder.Reset()
+            builder.WriteString(a)
+            builder.WriteString(BASIC_SUFIXS[i])
+            emit(builder.String())
         }
     }
-
-    // prefix + word + suffix (ORIGINAL)
+    
+    // prefix + word - usar builder para eficiencia
+    for i := 0; i < limitPref; i++ {
+        for _, b := range allBasicPatterns {
+            builder.Reset()
+            builder.WriteString(BASIC_PREFIXS[i])
+            builder.WriteString(b)
+            emit(builder.String())
+        }
+    }
+    
+    // prefix + word + suffix - con límites reducidos
     prefLimit := limitPref / 3
     sufLimit := limitSuf / 3
     if prefLimit < 0 {
@@ -819,15 +877,20 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
     if sufLimit < 0 {
         sufLimit = 0
     }
-    for _, a := range BASIC_PREFIXS[:prefLimit] {
-        for _, b := range basicPattern {
-            for _, c := range BASIC_SUFIXS[:sufLimit] {
-                nonRepeatedList = append(nonRepeatedList, a+b+c)
+    
+    for i := 0; i < prefLimit; i++ {
+        for _, b := range allBasicPatterns {
+            for j := 0; j < sufLimit; j++ {
+                builder.Reset()
+                builder.WriteString(BASIC_PREFIXS[i])
+                builder.WriteString(b)
+                builder.WriteString(BASIC_SUFIXS[j])
+                emit(builder.String())
             }
         }
     }
-
-    // EXTENDED MODE (ORIGINAL)
+    
+    // EXTENDED MODE
     if FULL_MODE {
         numLimit := amount_of_numericpat_used
         if numLimit > len(NUMERIC_PATTERNS) {
@@ -837,87 +900,112 @@ func generatePasswordList(word string, FULL_MODE, LIGHT_MODE bool) []string {
         if symLimit > len(SYMBOLIC_PATTERNS) {
             symLimit = len(SYMBOLIC_PATTERNS)
         }
-
+        
         // word + number
-        for _, a := range basicPattern {
-            for _, b := range NUMERIC_PATTERNS[:numLimit] {
-                nonRepeatedList = append(nonRepeatedList, a+b)
+        for _, a := range allBasicPatterns {
+            for i := 0; i < numLimit; i++ {
+                builder.Reset()
+                builder.WriteString(a)
+                builder.WriteString(NUMERIC_PATTERNS[i])
+                emit(builder.String())
             }
         }
+        
         // word + symbol
-        for _, a := range basicPattern {
-            for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
-                nonRepeatedList = append(nonRepeatedList, a+b)
+        for _, a := range allBasicPatterns {
+            for i := 0; i < symLimit; i++ {
+                builder.Reset()
+                builder.WriteString(a)
+                builder.WriteString(SYMBOLIC_PATTERNS[i])
+                emit(builder.String())
             }
         }
+        
         // word + number + symbol
-        for _, a := range basicPattern {
-            for _, b := range NUMERIC_PATTERNS[:numLimit] {
-                for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
-                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+        for _, a := range allBasicPatterns {
+            for i := 0; i < numLimit; i++ {
+                for j := 0; j < symLimit; j++ {
+                    builder.Reset()
+                    builder.WriteString(a)
+                    builder.WriteString(NUMERIC_PATTERNS[i])
+                    builder.WriteString(SYMBOLIC_PATTERNS[j])
+                    emit(builder.String())
                 }
             }
         }
+        
         // word + symbol + number
-        for _, a := range basicPattern {
-            for _, b := range SYMBOLIC_PATTERNS[:symLimit] {
-                for _, c := range NUMERIC_PATTERNS[:numLimit] {
-                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+        for _, a := range allBasicPatterns {
+            for i := 0; i < symLimit; i++ {
+                for j := 0; j < numLimit; j++ {
+                    builder.Reset()
+                    builder.WriteString(a)
+                    builder.WriteString(SYMBOLIC_PATTERNS[i])
+                    builder.WriteString(NUMERIC_PATTERNS[j])
+                    emit(builder.String())
                 }
             }
         }
+        
         // symbol + word
-        for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
-            for _, b := range basicPattern {
-                nonRepeatedList = append(nonRepeatedList, a+b)
+        for i := 0; i < symLimit; i++ {
+            for _, b := range allBasicPatterns {
+                builder.Reset()
+                builder.WriteString(SYMBOLIC_PATTERNS[i])
+                builder.WriteString(b)
+                emit(builder.String())
             }
         }
+        
         // number + word
-        for _, a := range NUMERIC_PATTERNS[:numLimit] {
-            for _, b := range basicPattern {
-                nonRepeatedList = append(nonRepeatedList, a+b)
+        for i := 0; i < numLimit; i++ {
+            for _, b := range allBasicPatterns {
+                builder.Reset()
+                builder.WriteString(NUMERIC_PATTERNS[i])
+                builder.WriteString(b)
+                emit(builder.String())
             }
         }
+        
         // symbol + word + number
-        for _, a := range SYMBOLIC_PATTERNS[:symLimit] {
-            for _, b := range basicPattern {
-                for _, c := range NUMERIC_PATTERNS[:numLimit] {
-                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+        for i := 0; i < symLimit; i++ {
+            for _, b := range allBasicPatterns {
+                for j := 0; j < numLimit; j++ {
+                    builder.Reset()
+                    builder.WriteString(SYMBOLIC_PATTERNS[i])
+                    builder.WriteString(b)
+                    builder.WriteString(NUMERIC_PATTERNS[j])
+                    emit(builder.String())
                 }
             }
         }
+        
         // number + word + symbol
-        for _, a := range NUMERIC_PATTERNS[:numLimit] {
-            for _, b := range basicPattern {
-                for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
-                    nonRepeatedList = append(nonRepeatedList, a+b+c)
+        for i := 0; i < numLimit; i++ {
+            for _, b := range allBasicPatterns {
+                for j := 0; j < symLimit; j++ {
+                    builder.Reset()
+                    builder.WriteString(NUMERIC_PATTERNS[i])
+                    builder.WriteString(b)
+                    builder.WriteString(SYMBOLIC_PATTERNS[j])
+                    emit(builder.String())
                 }
             }
         }
-		// word + suffix + symbol
-		for _, a := range basicPattern {
-			for _, b := range BASIC_SUFIXS[:limitSuf] {
-				for _, c := range SYMBOLIC_PATTERNS[:symLimit] {
-					nonRepeatedList = append(nonRepeatedList, a+b+c)
-				}
-			}
-		}
+        
+        // word + suffix + symbol
+        for _, a := range allBasicPatterns {
+            for i := 0; i < limitSuf; i++ {
+                for j := 0; j < symLimit; j++ {
+                    builder.Reset()
+                    builder.WriteString(a)
+                    builder.WriteString(BASIC_SUFIXS[i])
+                    builder.WriteString(SYMBOLIC_PATTERNS[j])
+                    emit(builder.String())
+                }
+            }
+        }
     }
-
-    // ✅ Dedupe al final (ORIGINAL)
-    return uniquePreserve(nonRepeatedList)
-}
-
-func uniquePreserve(items []string) []string {
-	seen := map[string]struct{}{}
-	out := []string{}
-	for _, it := range items {
-		if _, ok := seen[it]; !ok {
-			seen[it] = struct{}{}
-			out = append(out, it)
-		}
-	}
-	return out
 }
 
 // extract patterns from file (prefixes, suffixes, numbers, symbols)
