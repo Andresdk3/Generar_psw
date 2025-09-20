@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,7 +57,7 @@ var (
 	}
 
 	SYMBOLIC_PATTERNS = []string{
-		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", "///", ">", "++", "??", "!@", "\\", ":)", "ท", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "´", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
+		".", "-", "!", "@", "*", "/", "#", "&", ",", "$", "+", "=", "?", "(", ")", "**", "!!", ";", "<", "..", "'", "]", "%", "\"", "~", "...", "[", "`", "=\"", "\\'", ":", "!!!", "$$", "***", "^", "--", "@@", "//", "///", ">", "++", "??", "!@", "\\", ":)", "ท", "://", "!@#", "##", "\\\\\\'", ".,", "{", "\\\\", ",.", "}", "$$$", "><", ",,", "()", "ั", "้", "/*", "^^", "ุ", "@#", "ึ", "+-", "&&", "???", "@@@", "*/", "ิ", "|", ";;", "ี", "****", "==", "@!", "....", "!*", "[]", ",./", "---", "=]", "/*-", "@$", "=)", "!!!!", ".-", "#!", "~~", ",]", "!@#$", "-=", "*-", ")(", "+++", "))", "?!", "=-",
 	}
 )
 
@@ -382,7 +383,7 @@ func processPasswd(wordsList []string, outputFileName string) {
     }
     
     if shouldUseMassive {
-        massiveMode(wordsList, outputFileName)
+        massiveMode(wordsList,true, false, outputFileName)
         return
     }
 
@@ -661,92 +662,50 @@ func workerGenerate(word string, FULL_MODE, LIGHT_MODE bool, outChan chan<- stri
 }
 
 // massiveMode optimizada para mejor manejo de memoria
-func massiveMode(list_ []string, outputFileName string) {
-    verbosePrint("[!] Massive mode ENABLED")
-    VERBOSE = true
-    if !OUTPUT_FILE_BOOLEAN {
-        outputFileName = "output.txt"
-        verbosePrint("[!] Output file required for the massive mode. Saving results to -> " + outputFileName)
-    }
+func massiveMode(list_ []string, FULL_MODE, LIGHT_MODE bool, output string) {
+	verbosePrint("[!] Massive mode ENABLED")
+    runtime.GOMAXPROCS(runtime.NumCPU())
 
-    cpuCores := runtime.NumCPU()
-    if FULL_MODE {
-        ram, err := getTotalRAM()
-        if err == nil {
-            verbosePrint(fmt.Sprintf("[i] %.2f GB RAM detected.", ram))
-            if ram <= 31 {
-                cpuCores = cpuCores / 2
-                if cpuCores == 0 {
-                    cpuCores = 1
-                }
-            }
-            if ram <= 15 {
-                verbosePrint("[!] WARNING! Full mode + multicore could saturate RAM, crash, and go slower than expected. \n[!] We will use just few cores... Go for a coffe.")
-                cpuCores = cpuCores / 4
-                if cpuCores == 0 {
-                    cpuCores = 1
-                }
-            }
-        }
-    }
-    verbosePrint(fmt.Sprintf("[+] Using %d CPU cores", cpuCores))
-
-    outFile, err := os.Create(outputFileName)
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
-        return
-    }
-    defer outFile.Close()
-    
-    // Buffer más grande para escritura menos frecuente
-    writer := bufio.NewWriterSize(outFile, 64*1024) // 64KB buffer
-    defer writer.Flush()
-
-    // Canal con buffer más grande para reducir bloqueos
-    outChan := make(chan string, 1000)
     var wg sync.WaitGroup
+    sem := make(chan struct{}, runtime.NumCPU())
+    outChan := make(chan string, 1000)
 
-    // Writer goroutine optimizada
-    doneWriter := make(chan struct{})
+    // Lanzar un escritor en una goroutine separada
     go func() {
-        defer close(doneWriter)
-        for chunk := range outChan {
-            writer.WriteString(chunk)
-            writer.WriteByte('\n')
-            
-            // Flush periódico para evitar que el buffer crezca demasiado
-            if writer.Buffered() > 32*1024 {
-                writer.Flush()
-            }
+        file, err := os.Create(output)
+        if err != nil {
+            log.Fatal(err)
         }
-        writer.Flush()
+        defer file.Close()
+
+        writer := bufio.NewWriter(file)
+        defer writer.Flush()
+
+        for out := range outChan {
+            writer.WriteString(out)
+            writer.WriteByte('\n')
+        }
     }()
 
-    // Semáforo para controlar concurrencia
-    sem := make(chan struct{}, cpuCores)
-    
     // Procesar palabras con worker pool optimizado
     for _, w := range list_ {
         wg.Add(1)
         sem <- struct{}{}
-        
+
         go func(word string) {
-            defer func() { 
-                <-sem
-                wg.Done()
-            }()
-            
+            // Liberamos solo el semáforo aquí
+            defer func() { <-sem }()
+
             // Batch size mayor para reducir overhead de canal
             batchSize := 500
-            workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, batchSize, &sync.WaitGroup{})
+            // Usamos el mismo WaitGroup, no uno nuevo
+            workerGenerate(word, FULL_MODE, LIGHT_MODE, outChan, batchSize, &wg)
         }(w)
     }
 
     wg.Wait()
     close(outChan)
-    <-doneWriter
-
-    fmt.Printf("\n[+] Finished. Output saved to %s\n", outputFileName)
+	fmt.Printf("\n[+] Finished. Output saved to %s\n", output)
 }
 
 // generatePasswordListStreaming - Versión streaming que evita acumular toda la lista en memoria
